@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using Logica;
 
 namespace REST_Animales.Controllers
 {
@@ -23,7 +24,7 @@ namespace REST_Animales.Controllers
     Crear método de obtención de animales por especie, nombre (aproximacion).
     Crear método de obtención de registros por ID
 */
-    public class Animal
+    public class AnimalServicio
     {
         public int ID { get; set; }
 
@@ -32,26 +33,62 @@ namespace REST_Animales.Controllers
 
         [Required(ErrorMessage = "La especie es obligatoria")]
         public string Especie { get; set; }
+
+        [Required(ErrorMessage = "La edad es obligatoria"), Range(18, 60, ErrorMessage = "Fuera de rango de edad")]
+        public int Edad { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaModif { get; set; }
         public bool Eliminado { get; set; }
     }
+    public static class Conversores
+    {
+        public static AnimalServicio ConvertirAServicio(this Animal animal)
+        {
+            AnimalServicio animalServicio = new AnimalServicio()
+            {
+                ID = animal.ID,
+                Nombre = animal.Nombre,
+                Especie = animal.Especie,
+                Edad = animal.Edad,
+                FechaCreacion = animal.FechaCreacion,
+                FechaModif=animal.FechaModif,
+                Eliminado=animal.Eliminado
+
+            };
+            return animalServicio;
+        }
+
+        public static Animal ConvertirALogica(this AnimalServicio animalservicio)
+        {
+            Animal animal = new Animal()
+            {
+                ID = animalservicio.ID,
+                Nombre = animalservicio.Nombre,
+                Especie = animalservicio.Especie,
+                Edad = animalservicio.Edad,
+                FechaCreacion = animalservicio.FechaCreacion,
+                FechaModif = animalservicio.FechaModif,
+                Eliminado = animalservicio.Eliminado
+            };
+            return animal;
+        }
+    }
     [RoutePrefix("Animales")]
     public class AnimalesController : ApiController
     {
-        private static List<Animal> ListaAnimales = new List<Animal>()
+        private static List<AnimalServicio> ListaAnimales = new List<AnimalServicio>()
         {
-            new Animal(){ID=0, Nombre="Morita", Especie="Caniche", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false},
-            new Animal(){ID=1, Nombre="Poroto", Especie="Gato", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false},
-            new Animal(){ID=2, Nombre="Moro", Especie="Perro", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=true},
-            new Animal(){ID=3, Nombre="Oli", Especie="Perro", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false},
-            new Animal(){ID=4, Nombre="Samantha", Especie="Perro", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false}
+            new AnimalServicio(){ID=0, Nombre="Morita", Especie="Caniche", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false},
+            new AnimalServicio(){ID=1, Nombre="Poroto", Especie="Gato", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false},
+            new AnimalServicio(){ID=2, Nombre="Moro", Especie="Perro", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=true},
+            new AnimalServicio(){ID=3, Nombre="Oli", Especie="Perro", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false},
+            new AnimalServicio(){ID=4, Nombre="Samantha", Especie="Perro", FechaCreacion=DateTime.Parse("20/06/2022"), FechaModif=DateTime.Parse("23/06/2022"), Eliminado=false}
         };
 
         [Route("Lista")]
         public IHttpActionResult GetLista()
         {
-            List<Animal> lista = ListaAnimales.Where(x=>x.Eliminado==false).ToList();
+            List<AnimalServicio> lista = ListaAnimales.Where(x=>x.Eliminado==false).ToList();
             if (lista == null)
                 return BadRequest("La lista se encuentra vacía");
             return Ok(lista);
@@ -59,7 +96,7 @@ namespace REST_Animales.Controllers
         [Route("Obtener/{id}")]
         public IHttpActionResult Get(int id)
         {
-            Animal animal = ListaAnimales.Where(x => x.Eliminado == false && x.ID==id).FirstOrDefault();
+            AnimalServicio animal = ListaAnimales.Where(x => x.Eliminado == false && x.ID==id).FirstOrDefault();
             if (animal == null)
                 return BadRequest("El animal no existe o ha sido eliminado");
             return Ok(animal);
@@ -68,7 +105,7 @@ namespace REST_Animales.Controllers
         [Route("Obtener/Especie/{especie}")]
         public IHttpActionResult GetEspecie(string especie)
         {
-            List<Animal> listaFiltrada = ListaAnimales.Where(x => x.Eliminado == false && x.Especie.Contains(especie)).ToList();
+            List<AnimalServicio> listaFiltrada = ListaAnimales.Where(x => x.Eliminado == false && x.Especie.Contains(especie)).ToList();
             if (listaFiltrada == null)
                 return BadRequest("No existen animales de esa especie");
             return Ok(listaFiltrada);
@@ -77,13 +114,13 @@ namespace REST_Animales.Controllers
         [Route("Obtener/Nombre/{nombre}")]
         public IHttpActionResult GetNombre(string nombre)
         {
-            List<Animal> listaFiltrada = ListaAnimales.Where(x => x.Eliminado == false && x.Nombre.Contains(nombre)).ToList();
+            List<AnimalServicio> listaFiltrada = ListaAnimales.Where(x => x.Eliminado == false && x.Nombre.Contains(nombre)).ToList();
             if (listaFiltrada == null)
                 return BadRequest("No existen animales con ese nombre");
             return Ok(listaFiltrada);
         }
         [Route("Nuevo")]
-        public IHttpActionResult Post([FromBody]Animal animal)
+        public IHttpActionResult Post([FromBody]AnimalServicio animal)
         {
             if (!ModelState.IsValid)
             {
@@ -99,7 +136,7 @@ namespace REST_Animales.Controllers
         [Route("Eliminar/{id}")]
         public IHttpActionResult Delete(int id)
         {
-            Animal animal = ListaAnimales.Where(x => x.Eliminado == false && x.ID == id).FirstOrDefault();
+            AnimalServicio animal = ListaAnimales.Where(x => x.Eliminado == false && x.ID == id).FirstOrDefault();
             if (animal == null)
                 return BadRequest("El animal no existe o ya sido eliminado previamente");
             animal.Eliminado = true;
@@ -107,13 +144,13 @@ namespace REST_Animales.Controllers
         }
 
         [Route("Modificar/{id}")]
-        public IHttpActionResult Put(int id, Animal animal)
+        public IHttpActionResult Put(int id, AnimalServicio animal)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            Animal animalModificado = ListaAnimales.Where(x => x.ID == id && x.Eliminado==false).FirstOrDefault();
+            AnimalServicio animalModificado = ListaAnimales.Where(x => x.ID == id && x.Eliminado==false).FirstOrDefault();
             if (animalModificado == null)
                 return BadRequest("No existe un animal con esa ID o ya ha sido eliminado");
             animalModificado.FechaModif = DateTime.Now;

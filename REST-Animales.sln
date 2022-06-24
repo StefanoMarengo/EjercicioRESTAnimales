@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31919.166
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32413.511
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REST-Animales", "REST-Animales\REST-Animales.csproj", "{2511877D-1827-4409-B313-994553D5346A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logica", "Logica\Logica.csproj", "{EF3FEB39-7E1B-4573-8FD0-C6E27D9CF550}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entidades", "Entidades\Entidades.csproj", "{00BBF30F-B8BB-40FA-A8E5-827518767B8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{EF3FEB39-7E1B-4573-8FD0-C6E27D9CF550}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF3FEB39-7E1B-4573-8FD0-C6E27D9CF550}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF3FEB39-7E1B-4573-8FD0-C6E27D9CF550}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00BBF30F-B8BB-40FA-A8E5-827518767B8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00BBF30F-B8BB-40FA-A8E5-827518767B8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00BBF30F-B8BB-40FA-A8E5-827518767B8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00BBF30F-B8BB-40FA-A8E5-827518767B8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

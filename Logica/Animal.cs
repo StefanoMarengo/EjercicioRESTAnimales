@@ -12,6 +12,7 @@ namespace Logica
         public int ID { get; set; }
         public string Nombre { get; set; }
         public string Especie { get; set; }
+        public int Edad { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaModif { get; set; }
         public bool Eliminado { get; set; }

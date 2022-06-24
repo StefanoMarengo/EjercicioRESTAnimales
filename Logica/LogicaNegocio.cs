@@ -5,50 +5,39 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft;
-using Newtonsoft.Json;
+using Entidades;
+
 
 namespace Logica
 {
-    public class LogicaNegocio
+    public sealed class LogicaNegocio
     {
-        public void CargarAnimal(string nombre, string especie)
-        {
-            Animal animal = new Animal() {Nombre=nombre, Especie = especie };
+        // SINGLETON
 
-            var url = "http://localhost:44373/Animales/Nuevo";
-            WebRequest request = WebRequest.Create(url);
-            request.Method = "POST"; //???
-            
-            //No sé cómo sigue
+        private static LogicaNegocio instance = null;
+        private LogicaNegocio()
+        {
+
         }
-        public List<Animal> GetListaAnimales(int id)
+        public static LogicaNegocio Instancia
         {
-            List<Animal> lista = new List<Animal>();
-            var url = "http://localhost:44373/Animales/Obtener/"+id;
-            WebRequest request = WebRequest.Create(url);
-            request.Credentials = CredentialCache.DefaultCredentials;
-            WebResponse response = request.GetResponse();
-
-            using (Stream dataStream = response.GetResponseStream())
+            get
             {
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-
-                var respuesta = JsonConvert.DeserializeObject<dynamic>(responseFromServer);
-
-                foreach (var item in respuesta)
+                if (instance == null)
                 {
-                    lista.Add(new Animal()
-                    {
-                        ID = item.ID,
-                        Nombre = item.Nombre,
-                        Especie = item.Especie
-                    });
+                    instance = new LogicaNegocio();
                 }
+                return instance;
             }
-            response.Close();
-            return lista;
         }
+        //
+        public void CargarAnimal(string nombre, string especie)
+        { 
+
+        }
+        //public List<Animal> GetListaAnimales(int id)
+        //{
+           
+        //}
     }
 }
